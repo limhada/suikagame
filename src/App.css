@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 } */
+
+.App {
+  /* 가운데 정렬 */
+  display: flex;
+  justify-content: center; /* 가로 가운데 정렬 */
+  align-items: center; /* 세로 가운데 정렬 */
+  height: 100vh; /* 세로 중앙 정렬을 위해 부모 요소의 높이를 설정해주세요. */
+  
+}

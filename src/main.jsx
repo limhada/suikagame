@@ -1,6 +1,5 @@
 // TODO: 화면 가운데 정렬시키기
 // TODO: 추후 이미지 바꾸기
-
 import React, { useEffect, useRef } from 'react';
 import Matter from 'matter-js';
 import { FRUITS_BASE } from './fruits';
