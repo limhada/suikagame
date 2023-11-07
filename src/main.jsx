@@ -8,7 +8,7 @@ const Main = () => {
   const matterCanvasRef = useRef(null);
 
   useEffect(() => {
-    const { Bodies, Engine, Render, Runner, World } = Matter;
+    const { Bodies, Body, Engine, Render, Runner, World } = Matter;
 
     const engine = Engine.create();
     const render = Render.create({
@@ -41,6 +41,7 @@ const Main = () => {
       render: { fillStyle: '#E6B143' },
     });
 
+    // 윗쪽 시작 선
     const topLine = Bodies.rectangle(310, 150, 620, 2, {
       isStatic: true,
       isSensor: true,
@@ -54,6 +55,7 @@ const Main = () => {
 
     let currentBody = null;
     let currentFruit = null;
+    let disableAction = false;
 
     function addFruit() {
       const index = Math.floor(Math.random() * 5);
@@ -72,6 +74,36 @@ const Main = () => {
       currentFruit = fruit;
 
       World.add(world, body);
+
+      window.onkeydown = (event) => {
+        if (disableAction) {
+          return ;
+        }
+        // eslint-disable-next-line default-case
+        switch (event.code) {
+          case 'KeyA':
+            Body.setPosition(currentBody, {
+              x: currentBody.position.x - 10,
+              y: currentBody.position.y,
+            });
+            break;
+          case 'KeyD':
+            Body.setPosition(currentBody, {
+              x: currentBody.position.x + 10,
+              y: currentBody.position.y,
+            });
+            break;
+          case 'KeyS':
+            currentBody.isSleeping = false;
+            disableAction = true
+
+            setTimeout(() => {
+              addFruit()
+              disableAction = false
+            }, 1000);
+            break;
+        }
+      };
     }
 
     addFruit();
@@ -82,7 +114,11 @@ const Main = () => {
     };
   }, []);
 
-  return <canvas ref={matterCanvasRef} />;
+  return (
+    <div>
+      <canvas ref={matterCanvasRef} />;
+    </div>
+  );
 };
 
 export default Main;
