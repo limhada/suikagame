@@ -79,7 +79,7 @@ const Main = () => {
         render: {
           sprite: { texture: `${fruit.name}.png` },
         },
-        restitution: 0.3,
+        restitution: 0.2, // 물체가 충돌 후 튕겨져 나가는 정도
       });
 
       currentBody = body;
