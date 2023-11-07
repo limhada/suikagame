@@ -83,16 +83,20 @@ const Main = () => {
         // eslint-disable-next-line default-case
         switch (event.code) {
           case 'KeyA':
-            Body.setPosition(currentBody, {
-              x: currentBody.position.x - 10,
-              y: currentBody.position.y,
-            });
+            if (currentBody.position.x - currentFruit.radius > 30) {
+              Body.setPosition(currentBody, {
+                x: currentBody.position.x - 10,
+                y: currentBody.position.y,
+              });
+            }
             break;
           case 'KeyD':
-            Body.setPosition(currentBody, {
-              x: currentBody.position.x + 10,
-              y: currentBody.position.y,
-            });
+            if (currentBody.position.x + currentFruit.radius < 590) {
+              Body.setPosition(currentBody, {
+                x: currentBody.position.x + 10,
+                y: currentBody.position.y,
+              });
+            }
             break;
           case 'KeyS':
             currentBody.isSleeping = false;
@@ -132,11 +136,11 @@ const Main = () => {
               render: {
                 sprite: { texture: `${newFruit.name}.png` },
               },
-              index: index + 1
+              index: index + 1,
             }
           );
 
-          World.add(world, newBody)
+          World.add(world, newBody);
         }
       });
     });
