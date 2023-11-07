@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import Matter from 'matter-js';
 import { FRUITS_BASE } from './fruits';
-import { Collision } from 'matter-js';
+// import { Collision } from 'matter-js';
 
 const Main = () => {
   const matterCanvasRef = useRef(null);
@@ -44,6 +44,7 @@ const Main = () => {
 
     // 윗쪽 시작 선
     const topLine = Bodies.rectangle(310, 150, 620, 2, {
+      name: 'topLine',
       isStatic: true,
       isSensor: true,
       render: { fillStyle: '#E6B143' },
@@ -57,6 +58,7 @@ const Main = () => {
     let currentBody = null;
     let currentFruit = null;
     let disableAction = false;
+    let interval = null;
 
     function addFruit() {
       const index = Math.floor(Math.random() * 5);
@@ -83,20 +85,32 @@ const Main = () => {
         // eslint-disable-next-line default-case
         switch (event.code) {
           case 'KeyA':
-            if (currentBody.position.x - currentFruit.radius > 30) {
-              Body.setPosition(currentBody, {
-                x: currentBody.position.x - 10,
-                y: currentBody.position.y,
-              });
+            if (interval) {
+              return;
             }
+            // 과일 자연스럽게 움직이기 위해 setInterval 사용
+            interval = setInterval(() => {
+              if (currentBody.position.x - currentFruit.radius > 30) {
+                Body.setPosition(currentBody, {
+                  x: currentBody.position.x - 1,
+                  y: currentBody.position.y,
+                });
+              }
+            }, 5);
+
             break;
           case 'KeyD':
-            if (currentBody.position.x + currentFruit.radius < 590) {
-              Body.setPosition(currentBody, {
-                x: currentBody.position.x + 10,
-                y: currentBody.position.y,
-              });
+            if (interval) {
+              return;
             }
+            interval = setInterval(() => {
+              if (currentBody.position.x + currentFruit.radius < 590) {
+                Body.setPosition(currentBody, {
+                  x: currentBody.position.x + 1,
+                  y: currentBody.position.y,
+                });
+              }
+            }, 5);
             break;
           case 'KeyS':
             currentBody.isSleeping = false;
@@ -110,6 +124,16 @@ const Main = () => {
         }
       };
     }
+    
+    // 과일이 한쪽으로 계속 이동하는 것 막기 위한 로직
+    window.onkeyup = (event) => {
+      switch (event.code) {
+        case 'KeyA':
+        case 'KeyD':
+          clearInterval(interval);
+          interval = null;
+      }
+    };
 
     // 충돌 이벤트
     Events.on(engine, 'collisionActive', (event) => {
@@ -141,6 +165,14 @@ const Main = () => {
           );
 
           World.add(world, newBody);
+        }
+
+        if (
+          !disableAction &&
+          (collision.bodyA.name === 'topLine' ||
+            collision.bodyB.name === 'topLine')
+        ) {
+          alert('Game Over');
         }
       });
     });
