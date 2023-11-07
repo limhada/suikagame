@@ -1,9 +1,17 @@
-// TODO: 화면 가운데 정렬시키기
+// ver 1
+// TODO: 완 - 화면 가운데 정렬시키기
+//
 // TODO: 추후 이미지 바꾸기
+// TODO: 게임 오버 시 게임 다시 시작
+// TODO: 게임 오버 alert창 한번만 띄우기
+// TODO: 게임 오버 기준 선에 2초 닿으면 게임 오버
+// TODO: 난이도 조절하기
+//
+//
+
 import React, { useEffect, useRef } from 'react';
 import Matter from 'matter-js';
 import { FRUITS_BASE } from './fruits';
-// import { Collision } from 'matter-js';
 
 const Main = () => {
   const matterCanvasRef = useRef(null);
@@ -59,6 +67,7 @@ const Main = () => {
     let currentFruit = null;
     let disableAction = false;
     let interval = null;
+    let gameEnd = 0;
 
     function addFruit() {
       const index = Math.floor(Math.random() * 5);
@@ -117,14 +126,17 @@ const Main = () => {
             disableAction = true;
 
             setTimeout(() => {
-              addFruit();
-              disableAction = false;
+              // 게임 종료 시 더이상 새로운 과일 생성 x
+              if (gameEnd < 2) {
+                addFruit();
+                disableAction = false;
+              }
             }, 1000);
             break;
         }
       };
     }
-    
+
     // 과일이 한쪽으로 계속 이동하는 것 막기 위한 로직
     window.onkeyup = (event) => {
       switch (event.code) {
@@ -165,6 +177,17 @@ const Main = () => {
           );
 
           World.add(world, newBody);
+
+          // 승리 조건
+          if (newFruit.name === 'fruits_img/10_watermelon') {
+            gameEnd++;
+            // console.log(newFruit.name, gameEnd, "게임 승리?");
+            if (gameEnd > 1) {
+              setTimeout(() => {
+                alert('게임승리!');
+              }, 500);
+            }
+          }
         }
 
         if (
@@ -187,7 +210,7 @@ const Main = () => {
 
   return (
     <div>
-      <canvas ref={matterCanvasRef} />;
+      <canvas ref={matterCanvasRef} />
     </div>
   );
 };
